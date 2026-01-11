@@ -4,8 +4,10 @@
 <meta charset="UTF-8">
 <title>Paradise Cargo – Invoice</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <!-- Urbanist Font -->
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="files/style.css">
 </head>
 <body>
@@ -23,7 +25,7 @@
         </div>
     </div>
 
-    <!-- DATA -->
+    <!-- INVOICE CONTENT -->
     <div id="content"></div>
 
     <!-- TERMS -->
@@ -34,12 +36,15 @@
             <li>Fragile, electronic, iron, and heavy items must be packed securely by the sender.</li>
         </ol>
     </div>
-<div class="action-buttons">
-    <button class="btn-action" onclick="printBooking()">Print</button>
-    <button class="btn-action" onclick="editBooking()">Edit</button>
-    <button class="btn-action primary" onclick="newBooking()">Book New</button>
-</div>
 
+    <!-- ACTION BUTTONS -->
+    <div class="action-buttons">
+        <button class="btn-action" onclick="printBooking()">Print</button>
+        <button class="btn-action" onclick="editBooking()">Edit</button>
+        <button class="btn-action primary" onclick="newBooking()">Book New</button>
+    </div>
+
+    <!-- FOOTER -->
     <div class="footer">
         <p>Thank you for choosing Paradise Travels</p>
     </div>
@@ -47,6 +52,7 @@
 </div>
 
 <script>
+// ---------------- LOAD DATA ----------------
 const data = JSON.parse(localStorage.getItem("bookingData"));
 
 if (!data) {
@@ -55,22 +61,10 @@ if (!data) {
     throw new Error("No booking data");
 }
 
+// ---------------- BUILD HTML ----------------
 let html = `
 <div class="row"><strong>Invoice No</strong><span>${data.invoiceNo}</span></div>
 <div class="row"><strong>Date</strong><span>${data.date}</span></div>
-
-<div class="section">
-    <h3>Route Details</h3>
-    <div class="row"><strong>From</strong><span>${data.from}</span></div>
-    <div class="row"><strong>To</strong><span>${data.to}</span></div>
-</div>
-
-<div class="section">
-    <h3>Luggage Details</h3>
-    <div class="row"><strong>Type</strong><span>${data.luggage}</span></div>
-    <div class="row"><strong>Weight</strong><span>${data.weight} kg</span></div>
-    <div class="row"><strong>Items</strong><span>${data.items}</span></div>
-</div>
 
 <div class="section">
     <h3>Sender</h3>
@@ -85,23 +79,47 @@ let html = `
 </div>
 
 <div class="section">
-    <h3>Payment</h3>
-    <div class="row"><strong>Amount</strong><span>₹ ${data.price}</span></div>
+    <h3>Route Details</h3>
+    <div class="row"><strong>From</strong><span>${data.from}</span></div>
+    <div class="row"><strong>To</strong><span>${data.to}</span></div>
+</div>
+
+<div class="section split">
+
+    <!-- LEFT : LUGGAGE DETAILS -->
+    <div class="box">
+        <h3>Luggage Details</h3>
+        <div class="row"><strong>Type</strong><span>${data.luggage}</span></div>
+        <div class="row"><strong>Weight</strong><span>${data.weight} kg</span></div>
+        <div class="row"><strong>Items</strong><span>${data.items}</span></div>
+    </div>
+
+    <!-- RIGHT : PAYMENT INFO -->
+    <div class="box payment">
+        <h3>Payment Info</h3>
+        <div class="row total">
+            <strong>Amount</strong>
+            <span>₹ ${data.price}</span>
+        </div>
 `;
 
+// GST (optional)
 if (data.gstNo && data.gstNo !== "—") {
     html += `
-    <div class="row"><strong>GST No</strong><span>${data.gstNo}</span></div>
+        <div class="row"><strong>GST No</strong><span>${data.gstNo}</span></div>
     `;
 }
 
+// Close payment + section
 html += `
-    <div class="row"><strong>Payment Method</strong><span>${data.payment}</span></div>
+        <div class="row"><strong>Payment Method</strong><span>${data.payment}</span></div>
+    </div>
 </div>
 `;
 
 document.getElementById("content").innerHTML = html;
 
+// ---------------- BUTTON ACTIONS ----------------
 function printBooking() {
     window.print();
 }
